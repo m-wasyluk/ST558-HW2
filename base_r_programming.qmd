@@ -1,0 +1,82 @@
+---
+title: "Base R Programming"
+format: html
+editor: visual
+---
+
+## Task 1
+
+setup and calculation of mean
+
+```{r}
+pre_treatment_bp <- c(120, 151, 125, 126, 115, 132, 132, 129, 134, 139, 127, 122, 127, 135, 133, 128, 147, 138, 140, 132)
+
+post_treatment_bp <- c(127, 145, 135, 122, 115, 122, 123, 126, 126, 129, 132, 146, 120, 114, 121, 120, 128, 120, 133, 115)
+
+names(pre_treatment_bp) <- paste("Subject", 1:20, sep = "_")
+names(post_treatment_bp) <- paste("Subject", 1:20, sep = "_")
+
+treatment_diff <- pre_treatment_bp - post_treatment_bp
+
+mean(treatment_diff)
+```
+
+find indices and names where pressure is lowered
+
+```{r}
+which(treatment_diff > 0)
+```
+
+return mean of vector where pressure is lowered
+
+```{r}
+positive_diff <- treatment_diff[treatment_diff > 0]
+mean(positive_diff)
+```
+
+## Task 2
+
+create data frame and return rows where diff is negative
+
+```{r}
+treatment_data <- data.frame(patient = names(pre_treatment_bp), pre_bp = pre_treatment_bp, post_bp = post_treatment_bp, diff_bp = treatment_diff)
+
+treatment_data[treatment_data$diff_bp < 0,]
+```
+
+add column echoing whether post_bp \< 120, then print
+
+```{r}
+treatment_data$post_bp_lt_120 <- treatment_data$post_bp < 120
+knitr::kable(treatment_data)
+```
+
+## Task 3
+
+create new data frame
+
+```{r}
+placebo_data <- data.frame(
+  pre_bp = c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130),
+  post_bp = c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)
+)
+
+placebo_data$patient <- paste("Subject", 1:10, sep = "_")
+placebo_data$diff_bp <- placebo_data$pre_bp - placebo_data$post_bp
+placebo_data$post_bp_lt_20 <- placebo_data$post_bp < 20
+```
+
+create list and access treatment data 3 ways
+
+```{r}
+bp_data_full <- list(treatment = treatment_data, placebo = placebo_data)
+print(bp_data_full$treatment)
+print(bp_data_full[1])
+print(bp_data_full[[1]])
+```
+
+access pre_bp in placebo from new list
+
+```{r}
+bp_data_full$placebo$pre_bp
+```
